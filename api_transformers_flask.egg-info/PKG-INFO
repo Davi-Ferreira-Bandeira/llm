@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: api-transformers-flask
+Version: 0.1.0
+Summary: API Flask para modelos Transformers com PyTorch e SentencePiece
+Author-email: Davi Bandeira <davi@example.com>
+License: MIT
+Project-URL: homepage, https://github.com/seu-usuario/api-transformers-flask
+Project-URL: repository, https://github.com/seu-usuario/api-transformers-flask
+Project-URL: issues, https://github.com/seu-usuario/api-transformers-flask/issues
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: Flask>=3.0.0
+Requires-Dist: torch>=2.2.0
+Requires-Dist: transformers>=4.46.0
+Requires-Dist: sentencepiece>=0.2.0
+Requires-Dist: python-dotenv>=1.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: black>=24.0.0; extra == "dev"
+Requires-Dist: ruff>=0.6.0; extra == "dev"
+Requires-Dist: mypy>=1.10.0; extra == "dev"
+
+# llm

@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "api-transformers-flask"
+version = "0.1.0"
+description = "API Flask para modelos Transformers com PyTorch e SentencePiece"
+readme = "README.md"
+requires-python = ">=3.10"
+
+license = { text = "MIT" }
+
+authors = [
+  { name = "Davi Bandeira", email = "davi@example.com" },
+]
+
+dependencies = [
+  "Flask>=3.0.0",
+  "torch>=2.2.0",
+  "transformers>=4.46.0",
+  "sentencepiece>=0.2.0",
+  "python-dotenv>=1.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "black>=24.0.0",
+  "ruff>=0.6.0",
+  "mypy>=1.10.0",
+]
+
+[project.urls]
+homepage = "https://github.com/seu-usuario/api-transformers-flask"
+repository = "https://github.com/seu-usuario/api-transformers-flask"
+issues = "https://github.com/seu-usuario/api-transformers-flask/issues"
+
+
+[project.scripts]
+# Exemplo: cria um comando `run-api` no terminal
+run-api = "app.main:run"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra"
+testpaths = ["tests"]

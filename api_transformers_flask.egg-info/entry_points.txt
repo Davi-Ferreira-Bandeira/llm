@@ -1,0 +1,2 @@
+[console_scripts]
+run-api = app.main:run

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Blog com IA</title>
+    <style>
+        body { font-family: sans-serif; background: #eef; padding: 20px; }
+        div { margin-bottom: 20px; background: white; padding: 20px; border-radius: 10px; }
+        button { padding: 8px 20px; background: #667eea; color: white; border: none; border-radius: 8px; }
+        textarea { width: 100%; height: 60px; }
+    </style>
+</head>
+<body>
+    <h1>Mini Blog com IA</h1>
+    <div>
+        <input id="tema" placeholder="Tema do post" style="width:80%">
+        <button onclick="gerar()">Gerar Post</button>
+        <div id="novo"></div>
+    </div>
+    <div id="load" style="display:none;">Carregando...</div>
+    <h2>Posts</h2>
+    {% for id, tema, conteudo in posts %}
+    <div>
+        <h3>{{ tema }}</h3>
+        <p>{{ conteudo }}</p>
+        <h4>Comentários:</h4>
+        {% for t, s, c in comentarios[id] %}
+        <p><b>{{ s }}</b> ({{ '%.0f' % c }}%): {{ t }}</p>
+        {% endfor %}
+        <textarea id="c{{ id }}" placeholder="Escreva um comentário..."></textarea>
+        <button onclick="comentar({id})">Enviar</button>
+    </div>
+    {% endfor %}
+    <script>
+    async function gerar() {
+        let tema = document.getElementById('tema').value.trim();
+        if (!tema) return alert('Digite um tema!');
+        document.getElementById("load").style.display = "block";
+        let r = await fetch('/gerar-post', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({tema})
+        });
+        let d = await r.json();
+        document.getElementById("load").style.display = "none";
+        document.getElementById('novo').innerHTML = '<h3>Novo Post:</h3><p>' + d.post + '</p>';
+        location.reload();
+    }
+    async function comentar(id) {
+        let txt = document.getElementById('c' + id).value.trim();
+        if (!txt) return alert('Digite um comentário!');
+        document.getElementById("load").style.display = "block";
+        await fetch('/comentar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({comentario: txt, post_id: id})
+        });
+        location.reload();
+    }
+    </script>
+</body>
+</html>
