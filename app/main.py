@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-from transformers import pipeline
 import requests, sqlite3, os
 from dotenv import load_dotenv
+from transformers import pipeline as hf_pipeline
+import torch
 
 app = Flask(__name__)
 load_dotenv()
@@ -19,23 +20,31 @@ HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 HF_API = "https://router.huggingface.co/v1/chat/completions"
 MODEL = "meta-llama/Llama-3.2-3B-Instruct"
 
-def gerar_post_com_llm(tema):
-    h = {
-        "Authorization": f"Bearer {HUGGINGFACE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    m = [
+llama_pipe = hf_pipeline(
+    "text-generation",
+    model=MODEL,
+    torch_dtype=torch.bfloat16,   # se não tiver GPU boa, pode trocar pra float16 ou até float32
+    device_map="auto",            # "auto" põe na GPU se tiver, senão CPU
+    # token=HF_TOKEN,             # opcional se já tiver autenticado via CLI ou HF_TOKEN
+)
+
+def gerar_post_com_llm(tema: str) -> str:
+    messages = [
         {"role": "system", "content": "Escreva posts curtos e envolventes em português."},
         {"role": "user", "content": f"Escreva um post sobre '{tema}'."}
     ]
-    p = {
-        "model": MODEL,
-        "messages": m,
-        "max_tokens": 250,
-        "temperature": 0.8
-    }
-    r = requests.post(HF_API, headers=h, json=p).json()
-    return r["choices"][0]["message"]["content"].strip()
+
+    outputs = llama_pipe(
+        messages,
+        max_new_tokens=250,
+        temperature=0.8,
+        do_sample=True,   # pra respeitar a temperatura
+    )
+
+    # Formato típico do Llama 3.2 com pipeline:
+    # outputs[0]["generated_text"] é uma lista de mensagens; pegamos a última
+    resposta = outputs[0]["generated_text"][-1]["content"]
+    return resposta.strip()
 
 analisador = pipeline(
     "sentiment-analysis",
