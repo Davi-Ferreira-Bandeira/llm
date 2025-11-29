@@ -26,7 +26,7 @@ def gerar_post_com_llm(tema):
     }
     m = [
         {"role": "system", "content": "Escreva posts curtos e envolventes em português."},
-        {"role": "user", "content": f"Escreva um post sobre '{tema}'."
+        {"role": "user", "content": f"Escreva um post sobre '{tema}'."}
     ]
     p = {
         "model": MODEL,
